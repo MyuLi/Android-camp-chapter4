@@ -13,14 +13,14 @@ public class PostVideoResponse {
     @SerializedName("success")
      private  String success ;
      @SerializedName("item")
-    private Feed item;
+    private Feed item ;
 
     public void setItem(Feed item) {
         this.item = item;
     }
 
     public Feed getItem() {
-        return item;
+        return this.item;
     }
 
 

@@ -114,7 +114,6 @@ public class Solution2C2Activity extends AppCompatActivity {
     }
 
     public void chooseImage() {
-        // TODO-C2 (4) Start Activity to select an image
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -125,7 +124,6 @@ public class Solution2C2Activity extends AppCompatActivity {
 
 
     public void chooseVideo() {
-        // TODO-C2 (5) Start Activity to select a video
         Intent intent = new Intent();
         intent.setType("video/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -141,18 +139,17 @@ public class Solution2C2Activity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && null != data) {
             if (requestCode == PICK_IMAGE) {
-                Log.d(TAG, "success");
-
                 mSelectedImage = data.getData();
-                MultipartBody.Part coverImage = getMultipartFromUri("cover_url", mSelectedImage);
+                Log.d(TAG, "selectedImage = " + mSelectedImage);
+                MultipartBody.Part coverImage = getMultipartFromUri("cover_image", mSelectedImage);
                 image = coverImage;
               mBtn.setText(R.string.select_a_video);
             }
             else if (requestCode == PICK_VIDEO) {
                 mSelectedVideo = data.getData();
                 Log.d(TAG, "mSelectedVideo = " + mSelectedVideo);
-                MultipartBody.Part videoContent = getMultipartFromUri("video_url", mSelectedImage);
-// do sth.
+                MultipartBody.Part videoContent = getMultipartFromUri("video", mSelectedImage);
+                Log.d("mmmm", videoContent.toString());
                 video = videoContent;
                 mBtn.setText(R.string.post_it);
             }
@@ -171,23 +168,28 @@ public class Solution2C2Activity extends AppCompatActivity {
         mBtn.setText("POSTING...");
         mBtn.setEnabled(false);
 
+
         // TODO-C2 (6) Send Request to post a video with its cover image
         // if success, make a text Toast and show
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://http://10.108.10.39:8080/") // 设置 网络请求 Url
+                .baseUrl("http://10.108.10.39:8080/") // 设置 网络请求 Url
                 .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
                 .build();
+        Log.d("TESt", image.toString());
+        Log.d("TESt", video.toString());
 
-
-        retrofit.create(IMiniDouyinService.class).createVideo("1120172184","李妙宇",image,video).
+        retrofit.create(IMiniDouyinService.class).createVideo("1120172184","limiaoyu",image,video).
                 enqueue(new Callback<PostVideoResponse>() {
                     @Override public void onResponse(Call<PostVideoResponse> call, Response<PostVideoResponse> response) {
                         //response.body().
+                            Log.d(TAG, "onFailure: "+response);
+                      //   Log.d(TAG, response.body().getItem().getCover_image());
                         mBtn.setText(R.string.success_try_refresh);
+                        mBtn.setEnabled(true);
                     }
 
                     @Override public void onFailure(Call<PostVideoResponse> call, Throwable t) {
-                        mBtn.setTag("error");
+                        Log.d(TAG, "onFailure: "+t.getMessage());
                     }
                 });
     }

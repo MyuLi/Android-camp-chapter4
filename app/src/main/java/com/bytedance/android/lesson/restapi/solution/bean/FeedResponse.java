@@ -14,7 +14,7 @@ public class FeedResponse {
     @SerializedName("feeds")
     private  Feed feeds[] ;
     @SerializedName("success")
-    private String success = "eee";
+    private String success = "";
 
     public String getSuccess() {
         return success;
